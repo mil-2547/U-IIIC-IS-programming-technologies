@@ -1,0 +1,42 @@
+
+networks:
+  jenkins:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+  jenkins_docker-certs:
+
+services:
+
+  jenkins-docker:
+    container_name: jenkins-docker
+    image: docker:dind
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - jenkins_docker-certs:/certs/client
+      - jenkins_home:/var/jenkins_home
+    restart: unless-stopped
+    networks:
+      jenkins:
+        aliases:
+          - docker
+
+  jenkins-blueocean:
+    container_name: jenkins-blueocean
+    image: jenkins/jenkins:lts
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - jenkins_docker-certs:/certs/client:ro
+    ports:
+      - "8085:8080"
+      - "50000:50000"
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+    restart: unless-stopped
+    networks:
+      - jenkins
