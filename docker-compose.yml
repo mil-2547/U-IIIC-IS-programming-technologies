@@ -26,7 +26,8 @@ services:
 
   jenkins-blueocean:
     container_name: jenkins-blueocean
-    image: jenkins/jenkins:lts
+    build: .
+    user: root
     volumes:
       - jenkins_home:/var/jenkins_home
       - jenkins_docker-certs:/certs/client:ro

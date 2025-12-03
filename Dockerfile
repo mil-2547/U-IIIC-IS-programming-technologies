@@ -16,4 +16,3 @@ RUN echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] \
 RUN apt-get update && apt-get install -y docker-ce-cli
 
 USER jenkins
-RUN jenkins-plugin-cli
