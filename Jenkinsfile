@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh '''
                     apt-get update
-                    apt-get install -y make g++
+                    apt-get install -y make g++ gcc
                 '''
             }
         }
