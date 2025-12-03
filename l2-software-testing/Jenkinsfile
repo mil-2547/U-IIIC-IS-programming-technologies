@@ -1,1 +1,16 @@
+pipeline {
+  agenty any
+  stages {
+    stage('Test') {
+      steps {
+        sh 'make build'
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'make build-unit'
+        archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
+      }
+    }
+  }
 }
