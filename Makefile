@@ -17,7 +17,7 @@ CXXFLAGS := -std=c++20 -Wall -Wextra -O3 -MMD -MP $(INCLUDES)
 STATIC_FLAGS := -static -static-libgcc -static-libstdc++
 
 # [FIX] LDFLAGS is for linking. Added STATIC_FLAGS here.
-LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS)
+LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS) -lstdc++ -lpthread -lkernel32 -luser32 -lmsvcrt
 
 # For Coverage
 COV_FLAGS := -fprofile-arcs -ftest-coverage
