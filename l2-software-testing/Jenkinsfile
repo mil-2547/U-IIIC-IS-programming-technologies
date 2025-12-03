@@ -9,11 +9,13 @@ pipeline {
     }
     stage('Test') {
       steps {
+        sh 'cd l2-software-testing'
         sh 'make build-unit'
       }
     }
     stage('Build') {
       steps {
+        sh 'cd l2-software-testing'
         sh 'make build'
         archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
       }
