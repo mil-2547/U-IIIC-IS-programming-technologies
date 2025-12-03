@@ -1,6 +1,6 @@
 pipeline {
   options { timestamps()}
-  agenty any
+  agents any
   stages {
     stage('Check scm') {
       steps {
