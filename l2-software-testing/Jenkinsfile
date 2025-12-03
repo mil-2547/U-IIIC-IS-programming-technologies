@@ -3,12 +3,12 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        sh 'make build'
+        sh 'make build-unit'
       }
     }
     stage('Build') {
       steps {
-        sh 'make build-unit'
+        sh 'make build'
         archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
       }
     }
