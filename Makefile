@@ -169,7 +169,7 @@ $(OBJ_INT_DIR)/%.o: $(TEST_INTEGRATION_DIR)/%.c++ | $(OBJ_INT_DIR)
 # ========================
 $(OBJ_MAIN_DIR) $(OBJ_IMPL_DIR) $(OBJ_UNIT_DIR) $(OBJ_INT_DIR) $(BIN_DIR):
 	@echo $(CYAN)Creating directory:$(RESET) $@
-	@if not exist "$(subst /,\,$@)" mkdir "$(subst /,\,$@)"
+	@mkdir -p $@
 
 
 # ========================
@@ -177,7 +177,7 @@ $(OBJ_MAIN_DIR) $(OBJ_IMPL_DIR) $(OBJ_UNIT_DIR) $(OBJ_INT_DIR) $(BIN_DIR):
 # ========================
 clean:
 	@echo $(RED)Cleaning...$(RESET)
-	@if exist "$(subst /,\,$(BUILD_DIR))" rmdir /s /q "$(subst /,\,$(BUILD_DIR))"
+	@rm -rf $(BUILD_DIR)
 
 
 # Include auto-deps
