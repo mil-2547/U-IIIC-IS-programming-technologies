@@ -1,6 +1,12 @@
 pipeline {
+  options { timestamps()}
   agenty any
   stages {
+    stage('Check scm') {
+      steps {
+        checkout scm
+      }
+    }
     stage('Test') {
       steps {
         sh 'make build-unit'
