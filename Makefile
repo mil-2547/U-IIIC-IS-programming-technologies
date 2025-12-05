@@ -4,7 +4,7 @@
 CXX := g++
 
 # [FIX] Define Include paths separately (for Compiler)
-INCLUDES := -Ivendors/fmt/include -Ivendors/nlohmann_json -Ivendors/gtest/include
+INCLUDES := -Ivendors/fmt/include -Ivendors/nlohmann_json -Ivendors/gtest/googletest/include
 
 # [FIX] Add $(INCLUDES) to CXXFLAGS
 CXXFLAGS := -std=c++20 -Wall -Wextra -O3 -MMD -MP $(INCLUDES)
@@ -23,7 +23,7 @@ LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS) -lstdc++ -lpthread
 COV_FLAGS := -fprofile-arcs -ftest-coverage
 COV_LIBS := -lgcov
 
-GTEST_LIBS := -Lvendors/gtest/lib -lgtest -lgtest_main -pthread
+GTEST_LIBS := -Lvendors/gtest/build -lgtest -lgtest_main -pthread
 
 # ========================
 #   DIRECTORIES
@@ -49,7 +49,7 @@ TEST_INT_TARGET := integrationTest.exe
 #   VENDOR BUILD
 # ========================
 vendor-build:
-	$(CXX) -I vendors/gtest/include -c vendors/gtest/src/gtest-all.cc -o vendors/gtest/build/gtest-all.o
+	$(CXX) -I vendors/gtest/googletest/include -c vendors/gtest/googletest/src/gtest-all.cc -o vendors/gtest/build/gtest-all.o
 	ar rcs vendors/gtest/build/libgtest.a vendors/gtest/build/gtest-all.o
 
 	cd vendors/fmt && mkdir -p build && cd build && cmake .. && make -j
