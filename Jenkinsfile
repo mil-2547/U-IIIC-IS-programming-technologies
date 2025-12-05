@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'mingw-w64:latest'
+            image 'ghcr.io/msys2/msys2:latest'
             args '-u root:root'
         }
     }
