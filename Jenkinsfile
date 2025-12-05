@@ -22,10 +22,17 @@ pipeline {
             steps {
                 sh '''
                     apk update
-                    apk add --no-cache make g++ gcc libc-dev
+                    apk add --no-cache cmake make g++ gcc libc-dev
                 '''
             }
         }
+
+	stage('Build vendors') {
+	    steps {
+		sh 'make vendor-build'
+	    }
+	}
+
 
         stage('Test') {
             steps {

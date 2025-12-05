@@ -45,6 +45,15 @@ TARGET := app.exe
 TEST_UNIT_TARGET := unitTest.exe
 TEST_INT_TARGET := integrationTest.exe
 
+# ========================
+#   VENDOR BUILD
+# ========================
+vendor-build:
+	$(CXX) -I vendors/gtest/include -c vendors/gtest/src/gtest-all.cc -o vendors/gtest/build/gtest-all.o
+	ar rcs vendors/gtest/build/libgtest.a vendors/gtest/build/gtest-all.o
+
+	cd vendors/fmt && mkdir -p build && cd build && cmake .. && make -j
+
 
 # ========================
 #   SOURCE COLLECTION
