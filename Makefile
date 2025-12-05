@@ -1,7 +1,7 @@
 # ========================
 #   COMPILERS & FLAGS
 # ========================
-CXX := x86_64-w64-mingw32-g++
+CXX := g++
 
 # [FIX] Define Include paths separately (for Compiler)
 INCLUDES := -Ivendors/fmt/include -Ivendors/nlohmann_json -Ivendors/gtest/include
