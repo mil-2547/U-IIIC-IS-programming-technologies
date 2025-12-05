@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'alpine:latest'
+            image 'mingw-w64:latest'
             args '-u root:root'
         }
     }
@@ -21,27 +21,29 @@ pipeline {
         stage('Install deps') {
             steps {
                 sh '''
-                    apk update
-                    apk add --no-cache make g++ gcc libc-dev
+                    pacman -Syu --noconfirm
+                    pacman -S --noconfirm \
+                        mingw-w64-x86_64-toolchain \
+                        make
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'make build-unit'
+                sh 'mingw32-make build-unit'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'make build'
+                sh 'mingw32-make build'
             }
         }
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
+                archiveArtifacts artifacts: 'build/bin/*', fingerprint: true
             }
         }
     }
