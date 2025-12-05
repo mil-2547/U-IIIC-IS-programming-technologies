@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ghcr.io/msys2/msys2:latest'
+            image 'alpine:latest'
             args '-u root:root'
         }
     }
@@ -21,29 +21,27 @@ pipeline {
         stage('Install deps') {
             steps {
                 sh '''
-                    pacman -Syu --noconfirm
-                    pacman -S --noconfirm \
-                        mingw-w64-x86_64-toolchain \
-                        make
+                    apk update
+                    apk add --no-cache make g++ gcc libc-dev
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mingw32-make build-unit'
+                sh 'make build-unit'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mingw32-make build'
+                sh 'make build'
             }
         }
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'build/bin/*', fingerprint: true
+                archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
             }
         }
     }
