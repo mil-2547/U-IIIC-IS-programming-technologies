@@ -17,7 +17,7 @@ CXXFLAGS := -std=c++20 -Wall -Wextra -O3 -MMD -MP $(INCLUDES)
 STATIC_FLAGS := -static -static-libgcc -static-libstdc++
 
 # [FIX] LDFLAGS is for linking. Added STATIC_FLAGS here.
-LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS)
+LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS) -lstdc++ -lpthread
 
 # For Coverage
 COV_FLAGS := -fprofile-arcs -ftest-coverage
@@ -95,7 +95,7 @@ run:
 # ========================
 $(BIN_DIR)/$(TARGET): $(OBJS_CPP) $(OBJS_CXX) | $(BIN_DIR)
 	@echo $(GREEN)Linking main (Static):$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)  $(STATIC_FLAGS)
 
 
 # ========================
@@ -117,7 +117,7 @@ build-unit: $(BIN_DIR)/$(TEST_UNIT_TARGET)
 
 $(BIN_DIR)/$(TEST_UNIT_TARGET): $(OBJS_TEST_UNIT) $(OBJS_CPP) | $(BIN_DIR)
 	@echo $(GREEN)Linking Unit Tests:$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS) $(STATIC_FLAGS)
 
 run-unit: build-unit
 	@echo $(MAGENTA)Running Unit Tests:$(RESET)
@@ -131,7 +131,7 @@ build-int: $(BIN_DIR)/$(TEST_INT_TARGET)
 
 $(BIN_DIR)/$(TEST_INT_TARGET): $(OBJS_TEST_INT) $(OBJS_CPP) | $(BIN_DIR)
 	@echo $(GREEN)Linking Integration Tests:$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)  $(STATIC_FLAGS)
 
 run-int: build-int
 	@echo $(MAGENTA)Running Integration Tests:$(RESET)
@@ -169,7 +169,7 @@ $(OBJ_INT_DIR)/%.o: $(TEST_INTEGRATION_DIR)/%.c++ | $(OBJ_INT_DIR)
 # ========================
 $(OBJ_MAIN_DIR) $(OBJ_IMPL_DIR) $(OBJ_UNIT_DIR) $(OBJ_INT_DIR) $(BIN_DIR):
 	@echo $(CYAN)Creating directory:$(RESET) $@
-	@if not exist "$(subst /,\,$@)" mkdir "$(subst /,\,$@)"
+	@mkdir -p $@
 
 
 # ========================
@@ -177,7 +177,7 @@ $(OBJ_MAIN_DIR) $(OBJ_IMPL_DIR) $(OBJ_UNIT_DIR) $(OBJ_INT_DIR) $(BIN_DIR):
 # ========================
 clean:
 	@echo $(RED)Cleaning...$(RESET)
-	@if exist "$(subst /,\,$(BUILD_DIR))" rmdir /s /q "$(subst /,\,$(BUILD_DIR))"
+	@rm -rf $(BUILD_DIR)
 
 
 # Include auto-deps
