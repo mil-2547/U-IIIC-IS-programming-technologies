@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh '''
                     apk update
-                    apk add --no-cache cmake make g++ gcc libc-dev binutils
+                    apk add --no-cache cmake make g++ gcc libc-dev
                 '''
             }
         }
