@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:latest'
+            image 'alpine:latest'
             args '-u root:root'
         }
     }
@@ -11,18 +11,19 @@ pipeline {
     }
 
     stages {
-        stage('Install deps') {
-            steps {
-                sh '''
-                    apt-get update
-                    apt-get install -y make g++ gcc
-                '''
-            }
-        }
-
+        
         stage('Check SCM') {
             steps {
                 checkout scm
+            }
+        }
+        
+        stage('Install deps') {
+            steps {
+                sh '''
+                    apk update
+                    apk add --no-cache make g++ gcc libc-dev
+                '''
             }
         }
 
