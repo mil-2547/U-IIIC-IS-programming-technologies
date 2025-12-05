@@ -17,13 +17,13 @@ CXXFLAGS := -std=c++20 -Wall -Wextra -O3 -MMD -MP $(INCLUDES)
 STATIC_FLAGS := -static -static-libgcc -static-libstdc++
 
 # [FIX] LDFLAGS is for linking. Added STATIC_FLAGS here.
-LDFLAGS := -Lvendors/fmt/lib -lfmt $(STATIC_FLAGS) -lstdc++ -lpthread
+LDFLAGS := -Lvendors/fmt/build/lib -lfmt $(STATIC_FLAGS) -lstdc++ -lpthread
 
 # For Coverage
 COV_FLAGS := -fprofile-arcs -ftest-coverage
 COV_LIBS := -lgcov
 
-GTEST_LIBS := -Lvendors/gtest/build -lgtest -lgtest_main -pthread
+GTEST_LIBS := -Lvendors/gtest/build/lib -lgtest -lgtest_main -pthread
 
 # ========================
 #   DIRECTORIES
@@ -48,11 +48,18 @@ TEST_INT_TARGET := integrationTest.exe
 # ========================
 #   VENDOR BUILD
 # ========================
-vendor-build:
-	$(CXX) -I vendors/gtest/googletest/include -c vendors/gtest/googletest/src/gtest-all.cc -o vendors/gtest/build/gtest-all.o
-	ar rcs vendors/gtest/build/libgtest.a vendors/gtest/build/gtest-all.o
 
-	cd vendors/fmt && mkdir -p build && cd build && cmake .. && make -j
+vendor-build:
+	# CMake build googletest
+	mkdir -p vendors/gtest/build
+	cd vendors/gtest/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+	make -C vendors/gtest/build -j
+
+	# CMake build fmt
+	mkdir -p vendors/fmt/build
+	cd vendors/fmt/build && cmake ..
+	make -C vendors/fmt/build -j
+
 
 
 # ========================
