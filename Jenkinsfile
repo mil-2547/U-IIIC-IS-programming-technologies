@@ -30,8 +30,8 @@ pipeline {
 	stage('Build vendors') {
 	    steps {
 			sh 'make vendor-build'
-			sh 'ls vendor/fmt/build'
-			sh 'ls vendor/gtest/build'
+			sh 'ls vendors/fmt/build'
+			sh 'ls vendors/gtest/build'
 	    }
 	}
 
