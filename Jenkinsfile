@@ -43,7 +43,7 @@ pipeline {
             }
 			post {
 				always {
-					junit './build/test-results/unit.xml'
+					junit 'build/test-results/unit.xml'
 				}
 				success {
 					echo 'application testing successfully completed'
