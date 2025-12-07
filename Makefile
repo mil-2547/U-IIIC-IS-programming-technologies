@@ -111,7 +111,7 @@ run:
 #   MAIN PROGRAM LINK
 # ========================
 $(BIN_DIR)/$(TARGET): $(OBJS_CPP) $(OBJS_CXX) | $(BIN_DIR)
-	@echo $(GREEN)Linking main (Static):$(RESET)
+	@echo $(GREEN)Linking main:$(RESET)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 
