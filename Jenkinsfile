@@ -41,7 +41,18 @@ pipeline {
                 sh 'make build-unit'
 				sh 'make run-unit'
             }
-        }
+			post {
+				always {
+					junit './build/test-results/unit.xml'
+				}
+				success {
+					echo 'application testing successfully completed'
+				}
+				failure {
+					echo "Oh nooooo!!! Tests failed!"
+				}
+			}
+		}
 
         stage('Build') {
             steps {
