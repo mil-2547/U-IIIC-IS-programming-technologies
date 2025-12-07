@@ -39,6 +39,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'make build-unit'
+				sh './build/bin/unitTest'
             }
         }
 
