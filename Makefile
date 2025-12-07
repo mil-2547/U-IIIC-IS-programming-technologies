@@ -138,7 +138,7 @@ $(BIN_DIR)/$(TEST_UNIT_TARGET): $(OBJS_TEST_UNIT) $(OBJS_CPP) | $(BIN_DIR)
 
 run-unit: build-unit
 	@echo $(MAGENTA)Running Unit Tests:$(RESET)
-	$(BIN_DIR)/$(TEST_UNIT_TARGET)
+	$(BIN_DIR)/$(TEST_UNIT_TARGET) --gtest_output=xml:./build/test-results/unit.xml
 
 
 # ========================
