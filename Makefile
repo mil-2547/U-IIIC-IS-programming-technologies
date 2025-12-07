@@ -111,7 +111,7 @@ run:
 # ========================
 $(BIN_DIR)/$(TARGET): $(OBJS_CPP) $(OBJS_CXX) | $(BIN_DIR)
 	@echo $(GREEN)Linking main (Static):$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)  $(STATIC_FLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 
 # ========================
@@ -133,7 +133,7 @@ build-unit: $(BIN_DIR)/$(TEST_UNIT_TARGET)
 
 $(BIN_DIR)/$(TEST_UNIT_TARGET): $(OBJS_TEST_UNIT) $(OBJS_CPP) | $(BIN_DIR)
 	@echo $(GREEN)Linking Unit Tests:$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS) $(STATIC_FLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)
 
 run-unit: build-unit
 	@echo $(MAGENTA)Running Unit Tests:$(RESET)
@@ -147,7 +147,7 @@ build-int: $(BIN_DIR)/$(TEST_INT_TARGET)
 
 $(BIN_DIR)/$(TEST_INT_TARGET): $(OBJS_TEST_INT) $(OBJS_CPP) | $(BIN_DIR)
 	@echo $(GREEN)Linking Integration Tests:$(RESET)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)  $(STATIC_FLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(GTEST_LIBS) $(LDFLAGS)
 
 run-int: build-int
 	@echo $(MAGENTA)Running Integration Tests:$(RESET)
