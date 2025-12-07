@@ -22,24 +22,24 @@ pipeline {
             steps {
                 sh '''
                     apk update
-                    apk add --no-cache cmake make g++ gcc libc-dev
+                    apk add --no-cache cmake make g++ gcc libc-dev bash
                 '''
             }
         }
 
-	stage('Build vendors') {
-	    steps {
-			sh 'make vendor-build'
-			sh 'ls vendors/fmt/build'
-			sh 'ls vendors/gtest/build'
-	    }
-	}
+		stage('Build vendors') {
+		    steps {
+				sh 'make vendor-build'
+				sh 'ls vendors/fmt/build'
+				sh 'ls vendors/gtest/build'
+		    }
+		}
 
 
         stage('Test') {
             steps {
                 sh 'make build-unit'
-				sh './build/bin/unitTest'
+				sh 'make run-unit'
             }
         }
 
