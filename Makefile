@@ -41,9 +41,9 @@ OBJ_IMPL_DIR := $(OBJ_DIR)/cxx
 OBJ_UNIT_DIR := $(OBJ_DIR)/unit
 OBJ_INT_DIR := $(OBJ_DIR)/integration
 
-TARGET := app.exe
-TEST_UNIT_TARGET := unitTest.exe
-TEST_INT_TARGET := integrationTest.exe
+TARGET := app
+TEST_UNIT_TARGET := unitTest
+TEST_INT_TARGET := integrationTest
 
 # ========================
 #   VENDOR BUILD
