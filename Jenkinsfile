@@ -41,7 +41,7 @@ pipeline {
         stage('Install deps') {
             steps {
                 sh '''
-                    apk add --no-cache cmake make g++ libc-dev bash
+                    apk add --no-cache cmake make gcc g++ libc-dev bash
                 '''
             }
         }
