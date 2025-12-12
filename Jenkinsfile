@@ -7,7 +7,6 @@ pipeline {
     }
 
 	triggers {
-        cron('H 4 * * *')      // Періодично
 		cron('* * * * *')      // Періодично
 		
         pollSCM('H/10 * * * *') // Опитування SCM
