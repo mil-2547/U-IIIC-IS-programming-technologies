@@ -29,12 +29,19 @@ pipeline {
                 checkout scm
             }
         }
-        
-        stage('Install deps') {
+		
+		stage('Update alpine repository') {
             steps {
                 sh '''
                     apk update
-                    apk add --no-cache cmake make g++ gcc libc-dev bash docker
+                '''
+            }
+        }
+
+        stage('Install deps') {
+            steps {
+                sh '''
+                    apk add --no-cache cmake make g++ gcc libc-dev bash
                 '''
             }
         }
@@ -80,6 +87,14 @@ pipeline {
         stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'build/bin/app', fingerprint: true
+            }
+        }
+
+		stage('Install docker') {
+            steps {
+                sh '''
+                    apk add --no-cache docker
+                '''
             }
         }
 		
