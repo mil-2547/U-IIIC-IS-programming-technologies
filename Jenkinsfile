@@ -73,7 +73,7 @@ pipeline {
 					echo 'application testing successfully completed'
 				}
 				failure {
-					echo "Oh nooooo!!! Tests failed!"
+					echo 'Oh nooooo!!! Tests failed!'
 				}
 			}
 		}
@@ -101,8 +101,8 @@ pipeline {
 		stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
+                    sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .'
+                    sh 'docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest'
             }
         }
 		
@@ -110,9 +110,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDS_ID, passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                        sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-                        sh "docker push ${DOCKER_IMAGE}:latest"
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh 'docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}'
+                        sh 'docker push ${DOCKER_IMAGE}:latest'
                     }
                 }
             }
@@ -120,8 +120,8 @@ pipeline {
 		
 		stage('Cleanup') {
              steps {
-                 sh "docker rmi ${DOCKER_IMAGE}:${BUILD_NUMBER} || true"
-                 sh "docker rmi ${DOCKER_IMAGE}:latest || true"
+                 sh 'docker rmi ${DOCKER_IMAGE}:${BUILD_NUMBER} || true'
+                 sh 'docker rmi ${DOCKER_IMAGE}:latest || true'
              }
         }
     }
