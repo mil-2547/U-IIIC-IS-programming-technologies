@@ -102,8 +102,7 @@ pipeline {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-					sh "docker build -t ${DOCKER_IMAGE}:latest"
-                }
+                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
             }
         }
 		
