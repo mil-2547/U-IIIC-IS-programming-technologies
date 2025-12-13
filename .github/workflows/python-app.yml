@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "l6-l7-gihub-actions-plus-terraform" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "l6-l7-gihub-actions-plus-terraform" ]
 
 permissions:
   contents: read
