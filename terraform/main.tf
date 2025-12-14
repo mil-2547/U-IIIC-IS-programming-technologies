@@ -51,23 +51,14 @@ resource "aws_security_group" "web_app" {
   tags= { Name = "web_app" }
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*20.04*"]
-  }
-
-  # owners: список ID тих, хто володіє образом (в даному випадку ubuntu)
-  # Щоб terraform (та AWS) обрали тільки офіційні від Canonical (official ubuntu)
-  owners = ["099720109477"] # Canonical
+variable "aws_ami" {
+  type = string
+  default = "ami-0cebfb1f908092578"
 }
-
 
 resource "aws_instance" "webapp_instance" {
 
-  ami = data.aws_ami.ubuntu.id
+  ami = var.aws_ami
 
   instance_type   = "t3.micro"
   vpc_security_group_ids  = [aws_security_group.web_app.id]
