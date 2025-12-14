@@ -9,7 +9,12 @@ on:
   pull_request:
     branches: [ "l6-l7-gihub-actions-plus-terraform" ]
   workflow_dispatch:
-
+    inputs:
+      apply:
+        description: "Apply Terraform"
+        required: true
+        default: "false"
+        
 permissions:
   contents: read
 
