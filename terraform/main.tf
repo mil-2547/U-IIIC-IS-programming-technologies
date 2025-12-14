@@ -8,6 +8,13 @@ terraform {
   }
 
   required_version = ">= 1.14.0"
+
+  backend "s3" {
+    bucket = "lab-my-tf-state-bucket"
+    key    = "terraform.tfstate"
+    region = "eu-central-1"
+    dynamodb_table = "lab-my-tf-lockid"
+  }
 }
 
 # Configure the AWS provider
