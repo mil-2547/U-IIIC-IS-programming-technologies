@@ -63,6 +63,8 @@ resource "aws_instance" "webapp_instance" {
   instance_type   = "t3.micro"
   vpc_security_group_ids  = [aws_security_group.web_app.id]
 
+  key_name = "my-webapp-aws-instance-key"
+
   root_block_device {
     volume_size = 8     # <= 30GB безкоштовно на Free Tier
     volume_type = "gp3" # gp3 теж безкоштовний
