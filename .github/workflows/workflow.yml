@@ -115,7 +115,7 @@ jobs:
       working-directory: terraform
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/l6-l7-gihub-actions-plus-terraform'
+      if: github.event_name == 'workflow_dispatch'
       env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
