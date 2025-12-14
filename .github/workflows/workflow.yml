@@ -11,9 +11,10 @@ on:
   workflow_dispatch:
     inputs:
       apply:
-        description: "Apply Terraform"
-        required: true
-        default: "false"
+        description: "Apply Terraform changes?"
+        type: boolean
+        required: false
+        default: false
         
 permissions:
   contents: read
@@ -120,7 +121,7 @@ jobs:
       working-directory: terraform
 
     - name: Terraform Apply
-      if: github.event_name == 'workflow_dispatch'
+      if: github.event_name == 'workflow_dispatch' && inputs.apply
       env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
