@@ -61,10 +61,7 @@ else
 	@echo [EXEC] Running script for Unix...
 	@sh "$(VERSION_SCRIPT)"
 endif
-	@REM Читаем файл напрямую через консоль, чтобы показать реальную новую версию
-	@REM Вывод на одной строке
 ifeq ($(OS),Windows_NT)
-	@REM || verify >nul сбрасывает ошибку, которую выдает set /p
 	@set /p="[INFO] New Version check: " <nul || verify >nul
 	@type "$(call FIXPATH,$(VERSION_FILE))"
 else
