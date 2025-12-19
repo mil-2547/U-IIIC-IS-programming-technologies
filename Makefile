@@ -29,10 +29,11 @@ endif
 VERSION = $(strip $(READ_VER))
 
 # Search for script
-VERSION_SCRIPT := $(firstword \
-    $(wildcard scripts/increment-version.cmd) \
-    $(wildcard scripts/increment-version.sh) \
-)
+ifeq ($(OS),Windows_NT)
+    VERSION_SCRIPT := $(firstword $(wildcard scripts/increment-version.cmd))
+else
+    VERSION_SCRIPT := $(firstword $(wildcard scripts/increment-version.sh))
+endif
 
 # Container ID
 JENKINS_ID = $(firstword $(shell docker compose ps -q 2>$(NULL)))
