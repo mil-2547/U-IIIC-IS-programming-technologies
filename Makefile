@@ -66,7 +66,7 @@ DEPS := $(OBJS_CPP:.o=.d) $(OBJS_CXX:.o=.d) \
 
 
 # ========================
-#   COLORS (changed to non fow Windows)
+#   COLORS (changed to nil fow Windows)
 # ========================
 GREEN ?=
 MAGENTA ?=
