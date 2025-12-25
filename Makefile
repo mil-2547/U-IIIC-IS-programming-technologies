@@ -1,137 +1,89 @@
-# ==========================================
-# CROSS-PLATFORM SETTINGS
-# ==========================================
 
-VERSION_FILE := assets/VERSION
+_version_file := VERSION
 
-# Defining OS and configuring commands
 ifeq ($(OS),Windows_NT)
-    # --- WINDOWS SETTINGS ---
-    PLATFORM    := Windows
-    SHELL       := cmd.exe
-    NULL        := nul
-    RM          := del /Q /F
-    # Macro for replacing slashes (assets/file -> assets\file)
-    FIXPATH     = $(subst /,\,$(1))
-    # Version reading function (performed each time it is accessed)
-    READ_VER    = $(shell if exist "$(call FIXPATH,$(VERSION_FILE))" (type "$(call FIXPATH,$(VERSION_FILE))") else (echo 1.0))
+	PLATFORM       := Windows
+    VERSION_SCRIPT := scripts/increment-version.cmd
+	NULL           := nul
+	FIXPATH         = $(subst /,\,$(1))
+	READ_VER        = $(shell if exist "$(call FIXPATH,$(_version_file))" (type "$(call FIXPATH,$(_version_file))") else (echo 1.0))
 else
-    # --- LINUX / MAC SETTINGS ---
-    PLATFORM    := Unix
-    SHELL       := /bin/sh
-    NULL        := /dev/null
-    RM          := rm -f
-    FIXPATH     = $(1)
-    READ_VER    = $(shell cat "$(VERSION_FILE)" 2>$(NULL) || echo 1.0)
+	PLATFORM       := Unix
+    VERSION_SCRIPT := scripts/increment-version.sh
+	NULL           := /dev/null
+	FIXPATH         = $(1)
+	READ_VER        = $(shell cat "$(_version_file)" 2>$(NULL) || echo 1.0)
 endif
 
-# [IMPORTANT] Use = to make Make reread the file in each new target
-VERSION = $(strip $(READ_VER))
+_image_name := lab4-jenkins
+_image_tag   = $(strip $(READ_VER))
+_jenkins_id := $(firstword $(shell docker compose ps -q 2>$(NULL)))
 
-# Search for script
-ifeq ($(OS),Windows_NT)
-    VERSION_SCRIPT := $(firstword $(wildcard scripts/increment-version.cmd))
-else
-    VERSION_SCRIPT := $(firstword $(wildcard scripts/increment-version.sh))
-endif
 
-# Container ID
-JENKINS_ID = $(firstword $(shell docker compose ps -q 2>$(NULL)))
+.PHONY: all build up down version info key logs
 
-# ==========================================
-# TARGETS
-# ==========================================
+all: greeter build up
 
-.PHONY: all build up down version info key logs clean
 
-all: version build up info
-
-# 1. Version management
-version:
+greeter:
 	@echo [INFO] Platform: $(PLATFORM)
-	@echo [INFO] Old Version: $(VERSION)
-ifeq ($(VERSION_SCRIPT),)
-	$(error [ERROR] No version script found in scripts/ folder!)
-endif
-# Running the script
-ifeq ($(OS),Windows_NT)
-	@echo [EXEC] Running script for Windows...
-	@if /I "$(suffix $(VERSION_SCRIPT))"==".cmd" call "$(call FIXPATH,$(VERSION_SCRIPT))"
-	@if /I "$(suffix $(VERSION_SCRIPT))"==".sh"  sh "$(VERSION_SCRIPT)"
-else
-	@echo [EXEC] Running script for Unix...
-	@sh "$(VERSION_SCRIPT)"
-endif
-ifeq ($(OS),Windows_NT)
-	@set /p="[INFO] New Version check: " <nul || verify >nul
-	@type "$(call FIXPATH,$(VERSION_FILE))"
-else
-	@echo -n "[INFO] New Version check: "
-	@cat "$(VERSION_FILE)"
-endif
 
-# 2. Build (Here, Make will reread $(VERSION) and substitute the correct value)
+version:
+    @echo [INFO] Old Version: $(strip $(READ_VER))
+    @$(VERSION_SCRIPT)
+	$(_image_tag) := $(strip $(READ_VER))
+    @echo [INFO] New Version: $(_image_tag)
+
 build: version
-	@echo [DOCKER] Building image lab4-jenkins:$(VERSION)...
-	docker build -t lab4-jenkins:$(VERSION) .
+	@echo [DOCKER] Building image $(_image_name):$(_image_tag)...
+	docker build -t $(_image_name):$(_image_tag) .
 
-# 3. Launch
 up:
 	@echo [DOCKER] Starting compose...
 	docker compose up -d
-	@echo [INFO] System is up running lab4-jenkins:$(VERSION)
+	@echo [INFO] System is up :: running $(_image_name):$(_image_tag)
 
-# 4. Stop
 down:
 	@echo [DOCKER] Stopping...
 	docker compose down
 	@echo [INFO] Stopped.
 
-# 5. Information
 info:
-	@echo ========================================
-	@echo Image:     lab4-jenkins:$(VERSION)
-ifeq ($(OS),Windows_NT)
-	@if "$(JENKINS_ID)"=="" ( \
+    @echo ========================================
+    @echo Image:     $(_image_name):$(_image_tag)
+	ifeq ($(OS),Windows_NT)
+	@if "$(_jenkins_id)"=="" ( \
 		echo Container: NOT RUNNING \
 	) else ( \
-		echo Container ID: $(JENKINS_ID) && \
-		docker inspect --format "Status: {{.State.Status}} (Started: {{.State.StartedAt}})" $(JENKINS_ID) \
+		echo Container ID: $(_jenkins_id) && \
+		docker inspect --format "Status: {{.State.Status}} (Started: {{.State.StartedAt}})" $(_jenkins_id) \
 	)
-else
-	@if [ -z "$(JENKINS_ID)" ]; then \
+	else
+	@if [ -z "$(_jenkins_id)" ]; then \
 		echo "Container: NOT RUNNING"; \
 	else \
-		echo "Container ID: $(JENKINS_ID)"; \
-		docker inspect --format 'Status: {{.State.Status}} (Started: {{.State.StartedAt}})' "$(JENKINS_ID)"; \
+		echo "Container ID: $(_jenkins_id)"; \
+		docker inspect --format 'Status: {{.State.Status}} (Started: {{.State.StartedAt}})' "$(_jenkins_id)"; \
 	fi
-endif
-	@echo ========================================
+	endif
+    @echo ========================================
 
-# 6. Admin Key
 key:
-ifeq ($(OS),Windows_NT)
-	@if "$(JENKINS_ID)"=="" ( \
+	ifeq ($(OS),Windows_NT)
+	@if "$(_jenkins_id)"=="" ( \
 		echo [ERROR] Container not running. Run 'make up' first. && exit 1 \
 	)
+	else
+	@if [ -z "$(_jenkins_id)" ]; then \
+        echo "[ERROR] Container not running. Run 'make up' first."; exit 1; \
+    fi
+	endif
 	@echo [SECRET] Initial Admin Password:
-	@docker exec $(JENKINS_ID) cat /var/jenkins_home/secrets/initialAdminPassword
-else
-	@if [ -z "$(JENKINS_ID)" ]; then \
-		echo "[ERROR] Container not running. Run 'make up' first."; exit 1; \
-	fi
-	@echo "[SECRET] Initial Admin Password:"
-	@docker exec $(JENKINS_ID) cat /var/jenkins_home/secrets/initialAdminPassword
-endif
+	@docker exec $(_jenkins_id) cat /var/jenkins_home/secrets/initialAdminPassword
 
-# 7. Logs
 logs:
-ifeq ($(JENKINS_ID),)
-	@echo [WARN] No container running.
-else
-	docker logs -f $(JENKINS_ID)
-endif
-
-clean:
-	@echo [CLEAN] Removing version file...
-	-$(RM) "$(call FIXPATH,$(VERSION_FILE))"
+    @if "$(_jenkins_id)"=="" ( \
+        echo [WARN] No container running. \
+    ) else ( \
+        docker logs -f $(_jenkins_id) \
+    )
